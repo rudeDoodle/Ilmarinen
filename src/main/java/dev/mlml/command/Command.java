@@ -60,8 +60,7 @@ public abstract class Command {
         for (ArgumentBase<?> arg : arguments) {
             sb.append(arg.isRequired() ? "<" : "[");
             sb.append(arg.getName());
-            // TODO: Once VArgs is generalized for all argument types, this will need to be changed
-            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
+            if (arg.isVArgs()) {
                 sb.append("...");
             }
             sb.append(arg.isRequired() ? "> " : "] ");

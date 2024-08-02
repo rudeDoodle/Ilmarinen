@@ -84,8 +84,8 @@ public class Context {
         for (int i = 0; i < commandarguments.size(); i++) {
             ArgumentBase<?> arg = commandarguments.get(i);
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
-            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
-                logger.debug("Variable string argument found, skipping to end");
+            if (arg.isVArgs()) {
+                logger.debug("Variable argument found, skipping to end");
                 if (List.of(args).subList(i + offset, args.length).isEmpty()) {
                     return true;
                 }
