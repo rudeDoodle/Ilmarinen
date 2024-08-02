@@ -1,6 +1,7 @@
 package dev.mlml.command;
 
 import dev.mlml.command.argument.ArgumentBase;
+import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -40,19 +41,15 @@ public abstract class Command {
             return;
         }
 
-        boolean seenRequired = args[0].isRequired(),
-                seenVArgs = args[0].isVArgs();
+        boolean seenVArgs = args[0].getClass() == StringArgument.class && ((StringArgument) args[0]).isVArgs();
 
         for (int i = 1; i < args.length; i++) {
             ArgumentBase<?> arg = args[i];
             if (seenVArgs) {
+                logger.error("Variable arguments must be the last argument!");
                 throw new IllegalStateException(name + " has an argument after a variable argument!");
             }
-            if (arg.isRequired() && seenRequired) {
-                throw new IllegalStateException(name + " has a required argument after an optional one!");
-            }
-            seenRequired = arg.isRequired();
-            seenVArgs = arg.isVArgs();
+            seenVArgs = args[0].getClass() == StringArgument.class && ((StringArgument) args[0]).isVArgs();
         }
 
         arguments.addAll(List.of(args));
@@ -66,7 +63,7 @@ public abstract class Command {
         for (ArgumentBase<?> arg : arguments) {
             sb.append(arg.isRequired() ? "<" : "[");
             sb.append(arg.getName());
-            if (arg.isVArgs()) {
+            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
                 sb.append("...");
             }
             sb.append(arg.isRequired() ? "> " : "] ");
