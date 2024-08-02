@@ -13,6 +13,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok:$lombokVersion")
     annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
+    implementation("ch.qos.logback:logback-classic:1.5.6")
     implementation("net.dv8tion:JDA:$jdaVersion") { // replace $version with the latest version
         // Optionally disable audio natives to reduce jar size by excluding `opus-java`, we don't need it for now
         exclude(module = "opus-java")

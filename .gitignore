@@ -42,4 +42,4 @@ bin/
 .DS_Store
 
 ### Secrets ###
-.env
+ilmarinen.xml
