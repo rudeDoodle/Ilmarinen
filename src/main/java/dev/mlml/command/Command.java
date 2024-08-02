@@ -1,7 +1,6 @@
 package dev.mlml.command;
 
 import dev.mlml.command.argument.ArgumentBase;
-import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,7 +16,9 @@ public abstract class Command {
     private final String[] keywords;
     private final String name;
     private final String description;
+    private final int cooldown;
     private final EnumSet<Permission> permissions;
+    private final CommandInfo.Category category;
     private final List<ArgumentBase<?>> arguments = new ArrayList<>();
 
     private static final Logger logger = LoggerFactory.getLogger(Command.class);
@@ -31,8 +32,16 @@ public abstract class Command {
         keywords = ci.keywords();
         name = ci.name();
         description = ci.description();
+        cooldown = ci.cooldown();
         permissions = EnumSet.noneOf(Permission.class);
         permissions.addAll(Arrays.asList(ci.permissions()));
+        category = ci.category();
+
+
+        if (args.length == 0) {
+            logger.debug("Created command {} with no arguments", name);
+            return;
+        }
 
         boolean seenRequired = args[0].isRequired(),
                 seenVArgs = args[0].isVArgs();

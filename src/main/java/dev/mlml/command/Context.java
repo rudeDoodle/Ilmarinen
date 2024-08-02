@@ -3,7 +3,6 @@ package dev.mlml.command;
 import dev.mlml.Config;
 import dev.mlml.command.argument.ArgumentBase;
 import dev.mlml.command.argument.ParsedArgumentList;
-import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -24,6 +23,7 @@ public class Context {
     protected final GuildChannel gChannel;
     protected final Channel channel;
 
+    protected final String prefix;
     protected final String[] parts;
     protected final String command;
     protected final String[] args;
@@ -33,7 +33,7 @@ public class Context {
     protected final ParsedArgumentList parsedArguments;
 
     public Context(Message message) {
-        String prefix = Config.getServerConfig(message.getGuildId()).prefix;
+        prefix = Config.getServerConfig(message.getGuildId()).prefix;
 
         this.isValidCommand = message.getContentRaw().startsWith(prefix);
 
@@ -76,6 +76,7 @@ public class Context {
                     parsedArguments.invalidate();
                     return true;
                 }
+                parsedArguments.add(arg);
             }
             return false; // No required arguments, parsing successful with no arguments
         }

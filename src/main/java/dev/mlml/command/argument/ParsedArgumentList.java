@@ -1,6 +1,7 @@
 package dev.mlml.command.argument;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +56,11 @@ public class ParsedArgumentList {
             return argument.getDescription();
         }
 
+        @Nullable
         public Object getValue() {
+            if (argument.isRequired()) {
+                return Objects.requireNonNull(value, "Value should not be null for a required argument");
+            }
             return value;
         }
     }
