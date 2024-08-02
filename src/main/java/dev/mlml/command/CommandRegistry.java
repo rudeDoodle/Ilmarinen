@@ -1,5 +1,6 @@
 package dev.mlml.command;
 
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,7 @@ import java.util.*;
 public class CommandRegistry {
     private static final Logger logger = LoggerFactory.getLogger(CommandRegistry.class);
 
+    @Getter
     private static final Set<Command> commands = new HashSet<>();
     private static final Map<Command, Map<String, Long>> cooldowns = new HashMap<>();
 
@@ -58,7 +60,7 @@ public class CommandRegistry {
     }
 
     @Nullable
-    public static Command getCommandClassByKeyword(String name) {
+    public static Command getCommandByKeyword(String name) {
         return commands.stream()
                        .filter(command -> Arrays.asList(command.getKeywords()).contains(name))
                        .findFirst()
@@ -77,7 +79,7 @@ public class CommandRegistry {
             return;
         }
 
-        Command command = getCommandClassByKeyword(ctx.command);
+        Command command = getCommandByKeyword(ctx.command);
         if (Objects.isNull(command)) {
             message.reply("Command not found!").complete();
             return;
@@ -97,7 +99,7 @@ public class CommandRegistry {
 
         if (ctx.parse(command)) {
             logger.debug("Failed to parse command: {}", command.getName());
-            message.reply("Usage: " + command.getKeywords()[0] + " " + command.getUsage()).complete();
+            message.reply("Usage: " +  ctx.getPrefix() + " " + command.getUsage()).complete();
             return;
         }
 

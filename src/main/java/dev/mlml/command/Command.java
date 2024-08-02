@@ -18,6 +18,7 @@ public abstract class Command {
     private final String description;
     private final int cooldown;
     private final EnumSet<Permission> permissions;
+    private final CommandInfo.Category category;
     private final List<ArgumentBase<?>> arguments = new ArrayList<>();
 
     private static final Logger logger = LoggerFactory.getLogger(Command.class);
@@ -34,6 +35,8 @@ public abstract class Command {
         cooldown = ci.cooldown();
         permissions = EnumSet.noneOf(Permission.class);
         permissions.addAll(Arrays.asList(ci.permissions()));
+        category = ci.category();
+
 
         if (args.length == 0) {
             logger.debug("Created command {} with no arguments", name);
