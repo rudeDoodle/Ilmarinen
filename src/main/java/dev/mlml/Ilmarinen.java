@@ -1,8 +1,11 @@
 package dev.mlml;
 
 import dev.mlml.command.CommandRegistry;
+import dev.mlml.command.impl.Daily;
 import dev.mlml.command.impl.Echo;
 import dev.mlml.command.impl.Help;
+import dev.mlml.command.impl.UserInfo;
+import dev.mlml.economy.IO;
 import dev.mlml.handlers.Listener;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
@@ -21,6 +24,8 @@ public class Ilmarinen {
     public static void initCommandRegistry() {
         CommandRegistry.registerClass(Echo.class);
         CommandRegistry.registerClass(Help.class);
+        CommandRegistry.registerClass(Daily.class);
+        CommandRegistry.registerClass(UserInfo.class);
     }
 
     public static void main(String[] args) {
@@ -30,6 +35,7 @@ public class Ilmarinen {
         }
 
         Config.loadFromFile();
+        IO.load();
 
         String token = Config.BotConfig.getToken();
 
@@ -45,6 +51,7 @@ public class Ilmarinen {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             jda.shutdown();
             Config.saveToFile();
+            IO.save();
         }));
 
         EnumSet<GatewayIntent> intents = EnumSet.of(

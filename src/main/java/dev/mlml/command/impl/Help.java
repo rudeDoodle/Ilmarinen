@@ -4,13 +4,11 @@ import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
 import dev.mlml.command.argument.StringArgument;
-import net.dv8tion.jda.api.Permission;
 
 @CommandInfo(
         keywords = {"help"},
         name = "Help",
-        description = "Get help",
-        permissions = {Permission.MESSAGE_SEND}
+        description = "Get help"
 )
 public class Help extends Command {
     public Help() {
@@ -22,9 +20,8 @@ public class Help extends Command {
 
     @Override
     public void execute(Context ctx) {
-        // Placeholders
-//        String commandName = (String) ctx.getArgument("command").getValue();
-//
-//        System.out.println(commandName);
+        String commandName = (String) ctx.getArgument("command").getValue();
+
+        System.out.println(commandName);
     }
 }

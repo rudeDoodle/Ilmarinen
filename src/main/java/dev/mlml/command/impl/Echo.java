@@ -17,8 +17,7 @@ import java.util.EnumSet;
 @CommandInfo(
         keywords = {"echo", "say"},
         name = "Echo",
-        description = "Echoes the input",
-        permissions = {Permission.MESSAGE_SEND}
+        description = "Echoes the input"
 )
 public class Echo extends Command {
     public Echo() {

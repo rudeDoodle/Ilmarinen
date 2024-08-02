@@ -10,5 +10,6 @@ public @interface CommandInfo {
     String[] keywords();
     String name();
     String description();
-    Permission[] permissions();
+    Permission[] permissions() default {Permission.MESSAGE_SEND};
+    int cooldown() default 0;
 }
