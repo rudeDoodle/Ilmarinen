@@ -1,10 +1,7 @@
 package dev.mlml;
 
 import dev.mlml.command.CommandRegistry;
-import dev.mlml.command.impl.Daily;
-import dev.mlml.command.impl.Echo;
-import dev.mlml.command.impl.Help;
-import dev.mlml.command.impl.UserInfo;
+import dev.mlml.command.impl.*;
 import dev.mlml.economy.IO;
 import dev.mlml.handlers.Listener;
 import lombok.Getter;
@@ -26,6 +23,7 @@ public class Ilmarinen {
         CommandRegistry.registerClass(Help.class);
         CommandRegistry.registerClass(Daily.class);
         CommandRegistry.registerClass(UserInfo.class);
+        CommandRegistry.registerClass(Coinflip.class);
     }
 
     public static void main(String[] args) {

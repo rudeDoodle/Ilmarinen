@@ -3,7 +3,9 @@ package dev.mlml.command;
 import dev.mlml.Config;
 import dev.mlml.command.argument.ArgumentBase;
 import dev.mlml.command.argument.ParsedArgumentList;
+import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -22,6 +24,7 @@ public class Context {
     protected final Member member;
     protected final GuildChannel gChannel;
     protected final Channel channel;
+    protected final Guild guild;
 
     protected final String prefix;
     protected final String[] parts;
@@ -41,7 +44,7 @@ public class Context {
         this.member = message.getMember();
         this.gChannel = message.getGuildChannel();
         this.channel = message.getChannel();
-
+        this.guild = message.getGuild();
 
         if (!isValidCommand) {
             this.parts = new String[0];
@@ -85,7 +88,7 @@ public class Context {
         for (int i = 0; i < commandArguments.size(); i++) {
             ArgumentBase<?> arg = commandArguments.get(i);
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
-            if (arg.isVArgs()) {
+            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
                 logger.debug("Variable argument found, skipping to end");
                 if (List.of(args).subList(i + offset, args.length).isEmpty()) {
                     return true;

@@ -8,11 +8,16 @@ import org.slf4j.LoggerFactory;
 public class EconGuild {
     private static final Logger logger = LoggerFactory.getLogger(EconGuild.class);
 
+    @Serialize
     private int games;
+    @Serialize
     private int wins;
+    @Serialize
     private float winnings;
+    @Serialize
     private float spent;
 
+    // TODO: Implement a better way to update these on play/win
     public void play(float amount) {
         games++;
         if (amount <= 0) {
@@ -39,6 +44,7 @@ public class EconGuild {
         return winnings - spent;
     }
 
+    @Serialize
     private final String id;
 
     public EconGuild(String id) {

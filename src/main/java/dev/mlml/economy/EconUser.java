@@ -31,6 +31,7 @@ public class EconUser {
             return;
         }
         spent += amount;
+        money -= amount;
     }
 
     public void win(float amount) {
@@ -40,6 +41,11 @@ public class EconUser {
             return;
         }
         winnings += amount;
+        money += amount;
+    }
+
+    public boolean canAfford(float amount) {
+        return money >= amount;
     }
 
     public float getWinRate() {

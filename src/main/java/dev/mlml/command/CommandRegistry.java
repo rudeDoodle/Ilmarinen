@@ -97,9 +97,29 @@ public class CommandRegistry {
             return;
         }
 
-        if (ctx.parse(command)) {
-            logger.debug("Failed to parse command: {}", command.getName());
-            message.reply("Usage: " +  ctx.getPrefix() + " " + command.getUsage()).complete();
+        boolean parseError;
+        try {
+            parseError = ctx.parse(command);
+        } catch (NumberFormatException e) {
+            logger.error("Failed to parse command: {}, {}", command.getName(), e.getMessage());
+            message.reply(String.format("Invalid argument type!\nUsage: %s%s %s",
+                                        ctx.getPrefix(),
+                                        command.getKeywords()[0],
+                                        command.getUsage()
+            )).complete();
+            return;
+        } catch (Exception e) {
+            logger.error("Failed to parse command: {}, {}", command.getName(), e.getMessage());
+            message.reply("An error occurred while parsing the command!").complete();
+            return;
+        }
+
+        if (parseError) {
+            message.reply(String.format("Usage: %s%s %s",
+                                        ctx.getPrefix(),
+                                        command.getKeywords()[0],
+                                        command.getUsage()
+            )).complete();
             return;
         }
 
