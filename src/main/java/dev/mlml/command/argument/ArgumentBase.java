@@ -8,21 +8,19 @@ import java.util.Objects;
 public abstract class ArgumentBase<V> {
     final String name, description;
     @Getter
-    final V defaultValue;
     final boolean isRequired;
     final boolean isVArgs;
 
-    public ArgumentBase(String name, String description, boolean required, V defaultValue, boolean isVArgs) {
+    public ArgumentBase(String name, String description, boolean required, boolean isVArgs) {
         this.name = name;
         this.description = description;
         this.isRequired = required;
-        this.defaultValue = defaultValue;
         this.isVArgs = isVArgs;
     }
 
     public V getValue(String input) {
         V value = parse(input);
-        return Objects.isNull(value) ? defaultValue : value;
+        return Objects.isNull(value) ? null : value;
     }
 
     public abstract V parse(String input);
@@ -31,7 +29,6 @@ public abstract class ArgumentBase<V> {
     public abstract static class Builder<B extends Builder<?, ?, ?>, V, S extends ArgumentBase<?>> {
         String name, description = "";
         boolean isRequired = false;
-        V defaultValue;
         boolean isVArgs = false;
 
         protected Builder(String name) {
@@ -45,11 +42,6 @@ public abstract class ArgumentBase<V> {
 
         public B description(String description) {
             this.description = description;
-            return getThis();
-        }
-
-        public B defaultValue(V defaultValue) {
-            this.defaultValue = defaultValue;
             return getThis();
         }
 

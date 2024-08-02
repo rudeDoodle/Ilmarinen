@@ -61,6 +61,7 @@ public class CommandRegistry {
 
         if (ctx.parse(command)) {
             logger.debug("Failed to parse command: {}", command.getName());
+            message.reply("Usage: " +  command.getKeywords()[0] + " " + command.getUsage()).complete();
             return;
         }
 

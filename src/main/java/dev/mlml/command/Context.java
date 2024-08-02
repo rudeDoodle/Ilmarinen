@@ -76,7 +76,6 @@ public class Context {
                     parsedArguments.invalidate();
                     return true;
                 }
-                parsedArguments.add(arg);
             }
             return false; // No required arguments, parsing successful with no arguments
         }
@@ -87,11 +86,10 @@ public class Context {
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
             if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
                 logger.debug("Variable string argument found, skipping to end");
-                if (!List.of(args).subList(i + offset, args.length).isEmpty()) {
-                    parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
-                } else {
-                    parsedArguments.add(arg);
+                if (List.of(args).subList(i + offset, args.length).isEmpty()) {
+                    return true;
                 }
+                parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
                 break;
             }
             if (i >= args.length + offset) {
@@ -102,11 +100,6 @@ public class Context {
                                  offset
                     );
                     parsedArguments.invalidate();
-                } else {
-                    for (int j = i + offset; j < commandarguments.size(); j++) {
-                        parsedArguments.add(arg);
-                    }
-                    logger.debug("Filled all empty arguments with default");
                 }
                 return true;
             }

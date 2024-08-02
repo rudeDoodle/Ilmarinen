@@ -5,8 +5,8 @@ import dev.mlml.Utils;
 import net.dv8tion.jda.api.entities.User;
 
 public class UserArgument extends ArgumentBase<User> {
-    public UserArgument(String name, String description, boolean isRequired, User defaultValue, boolean isVArgs) {
-        super(name, description, isRequired, defaultValue, isVArgs);
+    public UserArgument(String name, String description, boolean isRequired, boolean isVArgs) {
+        super(name, description, isRequired, isVArgs);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class UserArgument extends ArgumentBase<User> {
 
         @Override
         public UserArgument get() {
-            return new UserArgument(name, description, isRequired, defaultValue, isVArgs);
+            return new UserArgument(name, description, isRequired, isVArgs);
         }
     }
 }

@@ -31,13 +31,6 @@ public class ParsedArgumentList {
         return parsedArg;
     }
 
-    public ParsedArg add(ArgumentBase<?> argument) {
-        ParsedArg parsedArg = new ParsedArg(argument, argument.getDefaultValue());
-        logger.debug("Added default for argument:  " + parsedArg);
-        arguments.add(parsedArg);
-        return parsedArg;
-    }
-
     public record ParsedArg(ArgumentBase<?> argument, Object value) {
         public boolean skip() {
             return Objects.isNull(value);

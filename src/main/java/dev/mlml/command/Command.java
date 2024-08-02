@@ -54,6 +54,36 @@ public abstract class Command {
         logger.debug("Created command {} with {} arguments", name, args.length);
     }
 
+    public String getUsage() {
+        StringBuilder sb = new StringBuilder();
+
+        for (ArgumentBase<?> arg : arguments) {
+            sb.append(arg.isRequired() ? "<" : "[");
+            sb.append(arg.getName());
+            // TODO: Once VArgs is generalized for all argument types, this will need to be changed
+            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
+                sb.append("...");
+            }
+            sb.append(arg.isRequired() ? "> " : "] ");
+            sb.append(" ");
+        }
+
+        return sb.toString().trim();
+    }
+
+    public String getArgDescription() {
+        StringBuilder sb = new StringBuilder();
+
+        for (ArgumentBase<?> arg : arguments) {
+            sb.append(arg.getName());
+            sb.append(": ");
+            sb.append(arg.getDescription());
+            sb.append("\n");
+        }
+
+        return sb.toString().trim();
+    }
+
     public abstract void execute(Context ctx);
 
     public boolean canExecute(Member member, GuildChannel channel) {
