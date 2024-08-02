@@ -17,7 +17,8 @@ import java.util.EnumSet;
 @CommandInfo(
         keywords = {"echo", "say"},
         name = "Echo",
-        description = "Echoes the input"
+        description = "Echoes the input",
+        category = CommandInfo.Category.Util
 )
 public class Echo extends Command {
     public Echo() {

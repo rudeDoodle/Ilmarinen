@@ -58,6 +58,9 @@ public class ParsedArgumentList {
 
         @Nullable
         public Object getValue() {
+            if (argument.isRequired()) {
+                return Objects.requireNonNull(value, "Value should not be null for a required argument");
+            }
             return value;
         }
     }
