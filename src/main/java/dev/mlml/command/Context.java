@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +68,19 @@ public class Context {
     public boolean parse(Command command) {
         List<? extends ArgumentBase<?>> commandarguments = command.getArguments();
 
+        if (args == null || args.length == 0) {
+            // Handle the case where no arguments are given
+            for (ArgumentBase<?> arg : commandarguments) {
+                if (arg.isRequired()) {
+                    logger.debug("Required argument not found: {}", arg.getName());
+                    parsedArguments.invalidate();
+                    return true;
+                }
+                parsedArguments.add(arg);
+            }
+            return false; // No required arguments, parsing successful with no arguments
+        }
+
         int offset = 0;
         for (int i = 0; i < commandarguments.size(); i++) {
             ArgumentBase<?> arg = commandarguments.get(i);
@@ -76,12 +90,15 @@ public class Context {
                 parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
                 break;
             }
-            if (arg.isRequired() && i > args.length + i + offset) {
-                logger.debug("Required argument not found: {}, args.length: {}, offset: {}",
-                             arg.getName(),
-                             args.length,
-                             offset
-                );
+            if (i > args.length + i + offset) {
+                if (arg.isRequired()) {
+                    logger.debug("Required argument not found: {}, args.length: {}, offset: {}",
+                                 arg.getName(),
+                                 args.length,
+                                 offset
+                    );
+                    parsedArguments.invalidate();
+                }
                 return true;
             }
             ParsedArgumentList.ParsedArg next = parsedArguments.add(arg, args[i + offset]);
@@ -96,6 +113,7 @@ public class Context {
         return false;
     }
 
+    @Nullable
     public ParsedArgumentList.ParsedArg getArgument(String name) {
         return parsedArguments.getArguments().stream()
                               .filter(parsedArg -> parsedArg.getName().equals(name))

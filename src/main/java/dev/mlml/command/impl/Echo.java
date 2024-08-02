@@ -25,8 +25,8 @@ public class Echo extends Command {
                         .get(),
                 new StringArgument.Builder("text")
                         .description("The text to echo")
-                        .require()
                         .isVArgs()
+                        .defaultValue("Echooo")
                         .get()
         );
     }

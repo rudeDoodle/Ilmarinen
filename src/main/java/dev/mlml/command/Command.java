@@ -35,7 +35,7 @@ public abstract class Command {
         permissions.addAll(Arrays.asList(ci.permissions()));
 
         boolean seenRequired = args[0].isRequired(),
-                seenVArgs = args[0].getClass() == StringArgument.class && ((StringArgument) args[0]).isVArgs();
+                seenVArgs = args[0].isVArgs();
 
         for (int i = 1; i < args.length; i++) {
             ArgumentBase<?> arg = args[i];
@@ -46,6 +46,7 @@ public abstract class Command {
                 throw new IllegalStateException(name + " has a required argument after an optional one!");
             }
             seenRequired = arg.isRequired();
+            seenVArgs = arg.isVArgs();
         }
 
         arguments.addAll(List.of(args));

@@ -6,8 +6,8 @@ import dev.mlml.Utils;
 import net.dv8tion.jda.api.entities.channel.Channel;
 
 public class ChannelArgument extends ArgumentBase<Channel> {
-    public ChannelArgument(String name, String description, boolean isRequired, Channel defaultValue) {
-        super(name, description, isRequired, defaultValue);
+    public ChannelArgument(String name, String description, boolean isRequired, Channel defaultValue, boolean isVArgs) {
+        super(name, description, isRequired, defaultValue, isVArgs);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ChannelArgument extends ArgumentBase<Channel> {
 
         @Override
         public ChannelArgument get() {
-            return new ChannelArgument(name, description, isRequired, defaultValue);
+            return new ChannelArgument(name, description, isRequired, defaultValue, isVArgs);
         }
     }
 }

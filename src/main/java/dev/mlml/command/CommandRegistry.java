@@ -64,6 +64,7 @@ public class CommandRegistry {
             return;
         }
 
+
         logger.debug("Executing command: {}", command.getName());
         command.execute(ctx);
     }
