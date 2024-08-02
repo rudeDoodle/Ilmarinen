@@ -13,7 +13,9 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 public class Context {
@@ -86,11 +88,15 @@ public class Context {
             ArgumentBase<?> arg = commandarguments.get(i);
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
             if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
-                logger.debug("Variable argument found, skipping to end");
-                parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
+                logger.debug("Variable string argument found, skipping to end");
+                if (!List.of(args).subList(i + offset, args.length).isEmpty()) {
+                    parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
+                } else {
+                    parsedArguments.add(arg);
+                }
                 break;
             }
-            if (i > args.length + i + offset) {
+            if (i >= args.length + offset) {
                 if (arg.isRequired()) {
                     logger.debug("Required argument not found: {}, args.length: {}, offset: {}",
                                  arg.getName(),
@@ -98,6 +104,11 @@ public class Context {
                                  offset
                     );
                     parsedArguments.invalidate();
+                } else {
+                    for (int j = i + offset; j < commandarguments.size(); j++) {
+                        parsedArguments.add(arg);
+                    }
+                    logger.debug("Filled all empty arguments with default");
                 }
                 return true;
             }

@@ -22,8 +22,9 @@ public class Help extends Command {
 
     @Override
     public void execute(Context ctx) {
-        String commandName = (String) ctx.getArgument("command").getValue();
-
-        System.out.println(commandName);
+        // Placeholders
+//        String commandName = (String) ctx.getArgument("command").getValue();
+//
+//        System.out.println(commandName);
     }
 }
