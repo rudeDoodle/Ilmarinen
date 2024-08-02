@@ -14,13 +14,26 @@ public class ParsedArgumentList {
     @Getter
     private final List<ParsedArg> arguments = new ArrayList<>();
 
+    private boolean isValid = true;
+
     public ParsedArgumentList() {
 
     }
 
+    public void invalidate() {
+        this.isValid = false;
+    }
+
     public ParsedArg add(ArgumentBase<?> argument, String input) {
-        ParsedArg parsedArg = new ParsedArg(argument, argument.getValue(input));
+        ParsedArg parsedArg = new ParsedArg(argument, argument.parse(input));
         logger.debug("Parsed argument: " + parsedArg);
+        arguments.add(parsedArg);
+        return parsedArg;
+    }
+
+    public ParsedArg add(ArgumentBase<?> argument) {
+        ParsedArg parsedArg = new ParsedArg(argument, null);
+        logger.debug("Filled argument: " + parsedArg);
         arguments.add(parsedArg);
         return parsedArg;
     }

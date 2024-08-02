@@ -7,9 +7,12 @@ import dev.mlml.command.argument.ChannelArgument;
 import dev.mlml.command.argument.ParsedArgumentList;
 import dev.mlml.command.argument.StringArgument;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+
+import java.util.EnumSet;
 
 @CommandInfo(
         keywords = {"echo", "say"},
@@ -25,8 +28,8 @@ public class Echo extends Command {
                         .get(),
                 new StringArgument.Builder("text")
                         .description("The text to echo")
-                        .require()
                         .isVArgs()
+                        .require()
                         .get()
         );
     }
@@ -46,9 +49,11 @@ public class Echo extends Command {
                 ctx.getMessage().reply("You don't have permission to send messages in that channel").queue();
                 return;
             }
-            ((TextChannel) channel).sendMessage(message).queue();
+            ((TextChannel) channel).sendMessage(message)
+                                   .setAllowedMentions(EnumSet.noneOf(Message.MentionType.class))
+                                   .queue();
         } else {
-            ctx.getMessage().reply(message).queue();
+            ctx.getMessage().reply(message).setAllowedMentions(EnumSet.noneOf(Message.MentionType.class)).queue();
         }
     }
 }

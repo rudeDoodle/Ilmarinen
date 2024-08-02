@@ -13,16 +13,18 @@ import net.dv8tion.jda.api.Permission;
         permissions = {Permission.MESSAGE_SEND}
 )
 public class Help extends Command {
-    public Help(Context ctx) {
-        super(new StringArgument.Builder("Command name")
-                      .description("The text to echo")
-                      .require()
+    public Help() {
+        super(new StringArgument.Builder("command")
+                      .description("Command to get details on")
                       .get()
         );
     }
 
     @Override
-    public void execute(Context args) {
-        args.getMessage().reply("Helptext placeholder").queue();
+    public void execute(Context ctx) {
+        // Placeholders
+//        String commandName = (String) ctx.getArgument("command").getValue();
+//
+//        System.out.println(commandName);
     }
 }

@@ -2,22 +2,20 @@ package dev.mlml.command.argument;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 @Getter
 public abstract class ArgumentBase<V> {
     final String name, description;
-    final V defaultValue;
+    @Getter
     final boolean isRequired;
+    final boolean isVArgs;
 
-    public ArgumentBase(String name, String description, boolean required, V defaultValue) {
+    public ArgumentBase(String name, String description, boolean required, boolean isVArgs) {
         this.name = name;
         this.description = description;
         this.isRequired = required;
-        this.defaultValue = defaultValue;
-    }
-
-    public V getValue(String input) {
-        V value = parse(input);
-        return value == null ? defaultValue : value;
+        this.isVArgs = isVArgs;
     }
 
     public abstract V parse(String input);
@@ -26,7 +24,7 @@ public abstract class ArgumentBase<V> {
     public abstract static class Builder<B extends Builder<?, ?, ?>, V, S extends ArgumentBase<?>> {
         String name, description = "";
         boolean isRequired = false;
-        V defaultValue;
+        boolean isVArgs = false;
 
         protected Builder(String name) {
             this.name = name;
@@ -42,13 +40,13 @@ public abstract class ArgumentBase<V> {
             return getThis();
         }
 
-        public B defaultValue(V defaultValue) {
-            this.defaultValue = defaultValue;
+        public B require() {
+            this.isRequired = true;
             return getThis();
         }
 
-        public B require() {
-            this.isRequired = true;
+        public B isVArgs() {
+            this.isVArgs = true;
             return getThis();
         }
 

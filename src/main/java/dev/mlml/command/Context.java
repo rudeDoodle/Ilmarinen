@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,24 +66,46 @@ public class Context {
     }
 
     public boolean parse(Command command) {
-        List<? extends ArgumentBase<?>> commandarguments = command.getArguments();
+        List<? extends ArgumentBase<?>> commandArguments = command.getArguments();
+
+        if (args == null || args.length == 0) {
+            // Handle the case where no arguments are given
+            for (ArgumentBase<?> arg : commandArguments) {
+                if (arg.isRequired()) {
+                    logger.debug("Required argument not found: {}", arg.getName());
+                    parsedArguments.invalidate();
+                    return true;
+                }
+            }
+            return false; // No required arguments, parsing successful with no arguments
+        }
 
         int offset = 0;
-        for (int i = 0; i < commandarguments.size(); i++) {
-            ArgumentBase<?> arg = commandarguments.get(i);
+        for (int i = 0; i < commandArguments.size(); i++) {
+            ArgumentBase<?> arg = commandArguments.get(i);
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
-            if (arg.getClass() == StringArgument.class && ((StringArgument) arg).isVArgs()) {
+            if (arg.isVArgs()) {
                 logger.debug("Variable argument found, skipping to end");
+                if (List.of(args).subList(i + offset, args.length).isEmpty()) {
+                    return true;
+                }
                 parsedArguments.add(arg, String.join(" ", List.of(args).subList(i + offset, args.length)));
                 break;
             }
-            if (arg.isRequired() && i > args.length + i + offset) {
-                logger.debug("Required argument not found: {}, args.length: {}, offset: {}",
-                             arg.getName(),
-                             args.length,
-                             offset
-                );
-                return true;
+            if (i >= args.length + offset) {
+                if (arg.isRequired()) {
+                    logger.debug("Required argument not found: {}, args.length: {}, offset: {}",
+                                 arg.getName(),
+                                 args.length,
+                                 offset
+                    );
+                    parsedArguments.invalidate();
+                    return true;
+                }
+                for (int j = i; j < commandArguments.size(); j++) {
+                    parsedArguments.add(commandArguments.get(j));
+                }
+                return false;
             }
             ParsedArgumentList.ParsedArg next = parsedArguments.add(arg, args[i + offset]);
             if (next.skip()) {
@@ -96,6 +119,7 @@ public class Context {
         return false;
     }
 
+    @Nullable
     public ParsedArgumentList.ParsedArg getArgument(String name) {
         return parsedArguments.getArguments().stream()
                               .filter(parsedArg -> parsedArg.getName().equals(name))
