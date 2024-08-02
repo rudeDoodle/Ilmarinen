@@ -66,11 +66,11 @@ public class Context {
     }
 
     public boolean parse(Command command) {
-        List<? extends ArgumentBase<?>> commandarguments = command.getArguments();
+        List<? extends ArgumentBase<?>> commandArguments = command.getArguments();
 
         if (args == null || args.length == 0) {
             // Handle the case where no arguments are given
-            for (ArgumentBase<?> arg : commandarguments) {
+            for (ArgumentBase<?> arg : commandArguments) {
                 if (arg.isRequired()) {
                     logger.debug("Required argument not found: {}", arg.getName());
                     parsedArguments.invalidate();
@@ -81,8 +81,8 @@ public class Context {
         }
 
         int offset = 0;
-        for (int i = 0; i < commandarguments.size(); i++) {
-            ArgumentBase<?> arg = commandarguments.get(i);
+        for (int i = 0; i < commandArguments.size(); i++) {
+            ArgumentBase<?> arg = commandArguments.get(i);
             logger.debug("Parsing argument: {}, offset: {}", arg.getName(), offset);
             if (arg.isVArgs()) {
                 logger.debug("Variable argument found, skipping to end");
@@ -100,8 +100,12 @@ public class Context {
                                  offset
                     );
                     parsedArguments.invalidate();
+                    return true;
                 }
-                return true;
+                for (int j = i; j < commandArguments.size(); j++) {
+                    parsedArguments.add(commandArguments.get(j));
+                }
+                return false;
             }
             ParsedArgumentList.ParsedArg next = parsedArguments.add(arg, args[i + offset]);
             if (next.skip()) {

@@ -18,11 +18,6 @@ public abstract class ArgumentBase<V> {
         this.isVArgs = isVArgs;
     }
 
-    public V getValue(String input) {
-        V value = parse(input);
-        return Objects.isNull(value) ? null : value;
-    }
-
     public abstract V parse(String input);
 
     @SuppressWarnings("unchecked")
