@@ -1,5 +1,6 @@
 package dev.mlml.command;
 
+import dev.mlml.Utils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
@@ -92,42 +93,9 @@ public class CommandRegistry {
 
         long cooldown = getCooldown(command, ctx.getMember().getId());
         if (cooldown > 0) {
-            long hours = cooldown / 3600000;
-            cooldown %= 3600000;
+            String prettyPrint = Utils.timePrettyPrint(cooldown);
 
-            long minutes = cooldown / 60000;
-            cooldown %= 60000;
-
-            long seconds = cooldown / 1000;
-
-            StringBuilder sb = new StringBuilder("You must wait ");
-            if (hours > 0) {
-                sb.append(hours).append(" hour");
-                if (hours > 1) {
-                    sb.append("s");
-                }
-                sb.append(" ");
-            }
-            if (minutes > 0) {
-                sb.append(minutes).append(" minute");
-                if (minutes > 1) {
-                    sb.append("s");
-                }
-                sb.append(" ");
-            }
-            if (seconds > 0) {
-                sb.append(seconds).append(" second");
-                if (seconds > 1) {
-                    sb.append("s");
-                }
-                sb.append(" ");
-            }
-            if (hours + minutes + seconds == 0) {
-                sb.append("1 second ");
-            }
-
-            sb.append("before using this command again");
-            String cooldownReply = sb.toString().trim();
+            String cooldownReply = String.format("You must wait %s before using this command again!", prettyPrint);
 
             message.reply(cooldownReply)
                    .complete();
