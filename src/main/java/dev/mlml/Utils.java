@@ -1,10 +1,6 @@
 package dev.mlml;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import dev.mlml.command.Context;
-import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +24,8 @@ public class Utils {
         return input.matches("^<#\\d{17,19}>$");
     }
 
-    public static JsonObject sendGetRequest(String urlString) {
-        JsonObject result = null;
+    public static DataObject sendGetRequest(String urlString) {
+        DataObject result = null;
         try {
             URL url = new URL(urlString);
 
@@ -42,22 +38,11 @@ public class Utils {
             int responseCode = connection.getResponseCode();
             if (responseCode == 200) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-
+                result = DataObject.fromJson(in);
                 in.close();
-
-                Gson gson = new Gson();
-                JsonElement jsonElement = gson.fromJson(response.toString(), JsonElement.class);
-                result = jsonElement.getAsJsonObject();
             } else {
                 logger.debug("Failed to send GET request");
             }
-
         } catch (Exception e) {
             logger.debug(e.getMessage());
         }

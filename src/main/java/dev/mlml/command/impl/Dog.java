@@ -1,14 +1,13 @@
 package dev.mlml.command.impl;
 
-import com.google.gson.JsonObject;
 import dev.mlml.Utils;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
-import dev.mlml.command.CommandRegistry;
 import dev.mlml.command.Context;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,25 +32,25 @@ public class Dog extends Command {
     @Override
     public void execute(Context ctx) {
 
-        final JsonObject response = Utils.sendGetRequest(DOG_API_URL);
+        final DataObject response = Utils.sendGetRequest(DOG_API_URL);
 
         if (Objects.isNull(response)) {
             ctx.getMessage().reply("Could not fetch media").queue();
             return;
         }
 
-        String mediaURl = response.get("url").getAsString();
+        String mediaURl = response.get("url").toString();
         logger.info("Media URL is: " + mediaURl);
         TextChannel channel = (TextChannel) ctx.getChannel();
 
         try {
             URL url = new URL(mediaURl);
-            String fileName = mediaURl.substring(mediaURl.lastIndexOf('/') + 1);
+            String fileName = url.getFile();
 
             try (InputStream in = url.openStream();
                  ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 
-                byte[] buffer = new byte[1024];
+                byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = in.read(buffer)) != -1) {
                     baos.write(buffer, 0, bytesRead);
@@ -64,6 +63,5 @@ public class Dog extends Command {
         } catch (Exception e) {
             channel.sendMessage("Failed to download and send the file.").queue();
         }
-
     }
 }
