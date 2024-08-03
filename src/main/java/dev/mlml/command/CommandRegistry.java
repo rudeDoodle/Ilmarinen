@@ -92,7 +92,44 @@ public class CommandRegistry {
 
         long cooldown = getCooldown(command, ctx.getMember().getId());
         if (cooldown > 0) {
-            message.reply(String.format("You must wait %d seconds before using this command again", cooldown / 1000))
+            long hours = cooldown / 3600000;
+            cooldown %= 3600000;
+
+            long minutes = cooldown / 60000;
+            cooldown %= 60000;
+
+            long seconds = cooldown / 1000;
+
+            StringBuilder sb = new StringBuilder("You must wait ");
+            if (hours > 0) {
+                sb.append(hours).append(" hour");
+                if (hours > 1) {
+                    sb.append("s");
+                }
+                sb.append(" ");
+            }
+            if (minutes > 0) {
+                sb.append(minutes).append(" minute");
+                if (minutes > 1) {
+                    sb.append("s");
+                }
+                sb.append(" ");
+            }
+            if (seconds > 0) {
+                sb.append(seconds).append(" second");
+                if (seconds > 1) {
+                    sb.append("s");
+                }
+                sb.append(" ");
+            }
+            if (hours + minutes + seconds == 0) {
+                sb.append("1 second ");
+            }
+
+            sb.append("before using this command again");
+            String cooldownReply = sb.toString().trim();
+
+            message.reply(cooldownReply)
                    .complete();
             return;
         }
