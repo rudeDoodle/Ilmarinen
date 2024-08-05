@@ -14,36 +14,34 @@ public class Replies {
     private static final String SUCCESS_TITLE = ":white_check_mark: Success";
     private static final String INFO_TITLE = ":information_source: Info";
 
-    private static EmbedBuilder base() {
+    public static EmbedBuilder base(Context ctx) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setFooter("Ilmarinen", Ilmarinen.getJda().getSelfUser().getAvatarUrl());
+        eb.setAuthor(ctx.getAuthor().getEffectiveName(), null, ctx.getAuthor().getAvatarUrl());
         return eb;
     }
 
     public static EmbedBuilder fail(Context ctx, String message) {
-        EmbedBuilder eb = base();
+        EmbedBuilder eb = base(ctx);
         eb.setColor(ERROR_COLOR);
         eb.setTitle(ERROR_TITLE);
         eb.setDescription(message);
-        eb.setAuthor(ctx.getAuthor().getEffectiveName(), null, ctx.getAuthor().getAvatarUrl());
         return eb;
     }
 
     public static EmbedBuilder success(Context ctx, String message) {
-        EmbedBuilder eb = base();
+        EmbedBuilder eb = base(ctx);
         eb.setColor(SUCCESS_COLOR);
         eb.setTitle(SUCCESS_TITLE);
         eb.setDescription(message);
-        eb.setAuthor(ctx.getAuthor().getEffectiveName(), null, ctx.getAuthor().getAvatarUrl());
         return eb;
     }
 
     public static EmbedBuilder info(Context ctx, String message) {
-        EmbedBuilder eb = base();
+        EmbedBuilder eb = base(ctx);
         eb.setColor(INFO_COLOR);
         eb.setTitle(INFO_TITLE);
         eb.setDescription(message);
-        eb.setAuthor(ctx.getAuthor().getEffectiveName(), null, ctx.getAuthor().getAvatarUrl());
         return eb;
     }
 }
