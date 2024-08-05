@@ -48,4 +48,32 @@ public class Utils {
         }
         return result;
     }
+
+    public static DataObject sendPostRequest(String urlString, String body) {
+        DataObject result = null;
+        try {
+            URL url = new URL(urlString);
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("POST");
+
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            connection.setDoOutput(true);
+            connection.getOutputStream().write(body.getBytes());
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == 200) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                result = DataObject.fromJson(in);
+                in.close();
+            } else {
+                logger.debug("Failed to send POST request");
+            }
+        } catch (Exception e) {
+            logger.debug(e.getMessage());
+        }
+        return result;
+    }
 }
