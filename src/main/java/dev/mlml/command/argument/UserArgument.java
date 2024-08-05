@@ -15,10 +15,10 @@ public class UserArgument extends ArgumentBase<User> {
             String id = input.contains("!")
                         ? input.substring(3, input.length() - 1)
                         : input.substring(2, input.length() - 1);
-            return Ilmarinen.getJda().getUserById(id);
+            return Ilmarinen.getJda().retrieveUserById(id).complete();
         }
         if (Utils.stringIsSnowflake(input)) {
-            return Ilmarinen.getJda().getUserById(input);
+            return Ilmarinen.getJda().retrieveUserById(input).complete();
         }
         return null;
     }

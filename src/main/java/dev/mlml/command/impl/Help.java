@@ -17,17 +17,17 @@ import java.util.Objects;
         category = CommandInfo.Category.Util
 )
 public class Help extends Command {
+    private static final StringArgument COMMAND_ARG = new StringArgument.Builder("command")
+            .description("Command to get details on")
+            .get();
 
     public Help() {
-        super(new StringArgument.Builder("command")
-                      .description("Command to get details on")
-                      .get()
-        );
+        super(COMMAND_ARG);
     }
 
     @Override
     public void execute(Context ctx) {
-        String commandName = (String) ctx.getArgument("command").getValue();
+        String commandName = ctx.getArgument(COMMAND_ARG).map(arg -> arg.getValue().toLowerCase()).orElse(null);
 
         Command command = CommandRegistry.getCommandByKeyword(commandName);
 
@@ -60,13 +60,12 @@ public class Help extends Command {
                 sb.append("\n");
             }
 
-            sb.toString().trim();
-            ctx.getMessage().reply(sb).queue();
+            ctx.succeed(sb.toString());
             return;
         }
 
         if (Objects.isNull(command)) {
-            ctx.getMessage().reply("Unknown command: " + commandName).queue();
+            ctx.fail("Unknown command: " + commandName);
             return;
         }
 
@@ -74,15 +73,14 @@ public class Help extends Command {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append(command.getName() + ": " + command.getDescription() + "\n");
-        sb.append("Usage: " + ctx.getPrefix() + commandName + " " + command.getUsage());
+        sb.append(command.getName()).append(": ").append(command.getDescription()).append("\n");
+        sb.append("Usage: ").append(ctx.getPrefix()).append(commandName).append(" ").append(command.getUsage());
         sb.append("\n\n");
         if (!command.getArguments().isEmpty()) {
-            sb.append("Arguments:\n" + command.getArgDescription());
+            sb.append("Arguments:\n").append(command.getArgDescription());
         }
 
-        sb.toString().trim();
 
-        ctx.getMessage().reply(sb).queue();
+        ctx.succeed(sb.toString());
     }
 }

@@ -17,14 +17,14 @@ import net.dv8tion.jda.api.Permission;
         category = CommandInfo.Category.Economy
 )
 public class Daily extends Command {
-    private final int daily = 20;
+    private static final int daily = 20;
 
     @Override
     public void execute(Context ctx) {
         EconUser econUser = Economy.getUser(ctx.getMember().getId());
         econUser.addMoney(daily);
 
-        ctx.getMessage().reply("You got your daily money!").queue();
+        ctx.succeed(String.format("You got your daily %d money", daily));
         IO.save();
     }
 }

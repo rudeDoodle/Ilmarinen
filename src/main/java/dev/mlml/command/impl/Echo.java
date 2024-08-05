@@ -4,7 +4,7 @@ import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
 import dev.mlml.command.argument.ChannelArgument;
-import dev.mlml.command.argument.ParsedArgumentList;
+import dev.mlml.command.argument.ParsedArgument;
 import dev.mlml.command.argument.StringArgument;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 @CommandInfo(
         keywords = {"echo", "say"},
@@ -21,32 +22,32 @@ import java.util.EnumSet;
         category = CommandInfo.Category.Util
 )
 public class Echo extends Command {
+    private static final StringArgument TEXT_ARG = new StringArgument.Builder("text")
+            .description("The text to echo")
+            .isVArgs()
+            .require()
+            .get();
+    private static final ChannelArgument CHANNEL_ARG = new ChannelArgument.Builder("channel")
+            .description("The channel to echo in")
+            .get();
+
     public Echo() {
-        super(
-                new ChannelArgument.Builder("channel")
-                        .description("The channel to echo in")
-                        .get(),
-                new StringArgument.Builder("text")
-                        .description("The text to echo")
-                        .isVArgs()
-                        .require()
-                        .get()
-        );
+        super(CHANNEL_ARG, TEXT_ARG);
     }
 
     @Override
     public void execute(Context ctx) {
-        ParsedArgumentList.ParsedArg channelArg = ctx.getArgument("channel");
-        String message = (String) ctx.getArgument("text").getValue();
+        Optional<ParsedArgument<Channel>> channelArg = ctx.getArgument(CHANNEL_ARG);
+        String message = ctx.getArgument(TEXT_ARG).map(ParsedArgument::getValue).orElse("");
 
-        if (!channelArg.skip()) {
-            Channel channel = (Channel) channelArg.getValue();
+        if (channelArg.isPresent()) {
+            Channel channel = channelArg.get().getValue();
             if (channel.getType() != ChannelType.TEXT) {
-                ctx.getMessage().reply("Invalid channel type").queue();
+                ctx.fail("Invalid channel type");
                 return;
             }
             if (!ctx.getMember().hasPermission((TextChannel) channel, Permission.MESSAGE_SEND)) {
-                ctx.getMessage().reply("You don't have permission to send messages in that channel").queue();
+                ctx.fail("You don't have permission to send messages in that channel");
                 return;
             }
             ((TextChannel) channel).sendMessage(message)
