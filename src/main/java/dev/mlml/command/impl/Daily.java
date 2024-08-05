@@ -3,9 +3,9 @@ package dev.mlml.command.impl;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
+import dev.mlml.economy.EconUser;
 import dev.mlml.economy.Economy;
 import dev.mlml.economy.IO;
-import dev.mlml.economy.EconUser;
 import net.dv8tion.jda.api.Permission;
 
 @CommandInfo(
@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.Permission;
         name = "Daily",
         description = "Get your daily money",
         permissions = {Permission.MESSAGE_SEND},
-        cooldown = 60 * 60 * 24
+        cooldown = 60 * 60 * 24,
+        category = CommandInfo.Category.Economy
 )
 public class Daily extends Command {
     private final int daily = 20;

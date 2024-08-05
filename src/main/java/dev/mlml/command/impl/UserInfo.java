@@ -14,7 +14,8 @@ import net.dv8tion.jda.api.entities.User;
         keywords = {"userinfo", "ui"},
         name = "User Info",
         description = "See your user info",
-        permissions = {Permission.MESSAGE_SEND}
+        permissions = {Permission.MESSAGE_SEND},
+        category = CommandInfo.Category.Economy
 )
 public class UserInfo extends Command {
     public UserInfo() {
