@@ -12,19 +12,42 @@ import java.net.URL;
 public class Utils {
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
+    /**
+     * Checks if the given string is a valid Discord snowflake.
+     *
+     * @param input the string to check
+     * @return true if the string is a valid snowflake, false otherwise
+     */
     public static boolean stringIsSnowflake(String input) {
         return input.matches("^\\d{17,19}$");
     }
 
+    /**
+     * Checks if the given string is a valid Discord user mention.
+     *
+     * @param input the string to check
+     * @return true if the string is a valid user mention, false otherwise
+     */
     public static boolean stringIsUserMention(String input) {
         return input.matches("^<@!?\\d{17,19}>$");
     }
 
+    /**
+     * Checks if the given string is a valid Discord channel mention.
+     *
+     * @param input the string to check
+     * @return true if the string is a valid channel mention, false otherwise
+     */
     public static boolean stringIsChannelMention(String input) {
         return input.matches("^<#\\d{17,19}>$");
     }
 
-    // This method takes in time in milliseconds and returns a formatted string in H:M:S
+    /**
+     * Converts a time duration in milliseconds to a human-readable string.
+     *
+     * @param milliseconds the time duration in milliseconds
+     * @return a human-readable string representing the time duration
+     */
     public static String timePrettyPrint(long milliseconds) {
         if (milliseconds < 1000) {
             return "1 second";
@@ -64,6 +87,12 @@ public class Utils {
         return sb.toString().trim();
     }
 
+    /**
+     * Sends a GET request to the specified URL and returns the response as a DataObject.
+     *
+     * @param urlString the URL to send the GET request to
+     * @return the response as a DataObject, or null if the request failed
+     */
     public static DataObject sendGetRequest(String urlString) {
         DataObject result = null;
         try {
@@ -89,6 +118,13 @@ public class Utils {
         return result;
     }
 
+    /**
+     * Sends a POST request to the specified URL with the given body and returns the response as a DataObject.
+     *
+     * @param urlString the URL to send the POST request to
+     * @param body      the body of the POST request
+     * @return the response as a DataObject, or null if the request failed
+     */
     public static DataObject sendPostRequest(String urlString, String body) {
         DataObject result = null;
         try {
