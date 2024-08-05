@@ -5,6 +5,7 @@ import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.slf4j.Logger;
@@ -14,6 +15,8 @@ import java.util.*;
 
 @Getter
 public abstract class Command {
+    private static final Logger logger = LoggerFactory.getLogger(Command.class);
+
     private final String[] keywords;
     private final String name;
     private final String description;
@@ -21,8 +24,6 @@ public abstract class Command {
     private final EnumSet<Permission> permissions;
     private final CommandInfo.Category category;
     private final List<ArgumentBase<?>> arguments = new ArrayList<>();
-
-    private static final Logger logger = LoggerFactory.getLogger(Command.class);
 
     public Command(ArgumentBase<?>... args) {
         CommandInfo ci = this.getClass().getAnnotation(CommandInfo.class);

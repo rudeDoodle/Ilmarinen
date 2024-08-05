@@ -45,7 +45,7 @@ public class EconUser {
     }
 
     public boolean canAfford(float amount) {
-        return money >= amount;
+        return money > 0 && money >= amount; // I think in any case you are checking for 'canAfford' you probably want a positive amount
     }
 
     public float getWinRate() {

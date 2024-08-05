@@ -3,10 +3,10 @@ package dev.mlml.command.impl;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
+import dev.mlml.command.argument.ParsedArgument;
 import dev.mlml.command.argument.UserArgument;
 import dev.mlml.economy.EconUser;
 import dev.mlml.economy.Economy;
-import dev.mlml.economy.IO;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 
@@ -18,26 +18,20 @@ import net.dv8tion.jda.api.entities.User;
         category = CommandInfo.Category.Economy
 )
 public class UserInfo extends Command {
+    private static final UserArgument USER_ARG = new UserArgument.Builder("user")
+            .description("The user to get info on")
+            .get();
+
     public UserInfo() {
-        super(new UserArgument.Builder("user")
-                      .description("The user to get info on")
-                      .get()
-        );
+        super(USER_ARG);
     }
 
     @Override
     public void execute(Context ctx) {
-        User userArg = (User) ctx.getArgument("user").getValue();
+        User user = ctx.getArgument(USER_ARG).map(ParsedArgument::getValue).orElse(ctx.getAuthor());
 
-        EconUser econUser;
+        EconUser econUser = Economy.getUser(user.getId());
 
-        if (userArg == null) {
-            econUser = Economy.getUser(ctx.getMember().getId());
-        } else {
-            econUser = Economy.getUser(userArg.getId());
-        }
-
-        ctx.getMessage().reply(String.format("You have %.2f money", econUser.getMoney())).queue();
-        IO.save();
+        ctx.succeed(String.format("%s has %.2f money", user.getEffectiveName(), econUser.getMoney()));
     }
 }
