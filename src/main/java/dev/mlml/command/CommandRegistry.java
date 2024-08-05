@@ -1,5 +1,6 @@
 package dev.mlml.command;
 
+import dev.mlml.Utils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
@@ -92,7 +93,11 @@ public class CommandRegistry {
 
         long cooldown = getCooldown(command, ctx.getMember().getId());
         if (cooldown > 0) {
-            message.reply(String.format("You must wait %d seconds before using this command again", cooldown / 1000))
+            String prettyPrint = Utils.timePrettyPrint(cooldown);
+
+            String cooldownReply = String.format("You must wait %s before using this command again!", prettyPrint);
+
+            message.reply(cooldownReply)
                    .complete();
             return;
         }
