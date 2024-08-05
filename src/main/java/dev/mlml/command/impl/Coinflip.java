@@ -12,7 +12,8 @@ import dev.mlml.economy.Economy;
 @CommandInfo(
         keywords = {"coinflip", "cf"},
         name = "Coinflip",
-        description = "Flip a coin"
+        description = "Flip a coin",
+        category = CommandInfo.Category.Economy
 )
 public class Coinflip extends Command {
     public Coinflip() {

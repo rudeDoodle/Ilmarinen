@@ -1,14 +1,11 @@
 package dev.mlml.command.impl;
 
-import dev.mlml.Config;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.CommandRegistry;
 import dev.mlml.command.Context;
 import dev.mlml.command.argument.StringArgument;
 import net.dv8tion.jda.api.Permission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
@@ -20,7 +17,6 @@ import java.util.Objects;
         category = CommandInfo.Category.Util
 )
 public class Help extends Command {
-    private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
     public Help() {
         super(new StringArgument.Builder("command")
