@@ -100,7 +100,7 @@ public class IO {
         String[] parts = string.split(USER_FIELD_SEPARATOR);
         EconGlobal econGlobal = new EconGlobal();
 
-        for (int i = 1; i < parts.length; i += 2) {
+        for (int i = 1; i < parts.length; i++) {
             String[] kv = parts[i].split(RECORD_SEPARATOR);
             String key = kv[0];
             String value = kv[1];
@@ -153,7 +153,7 @@ public class IO {
 
         logger.debug("Deserialized user: " + econUser);
 
-        for (int i = 1; i < parts.length; i += 2) {
+        for (int i = 1; i < parts.length; i++) {
             kv = parts[i].split(RECORD_SEPARATOR);
             String key = kv[0];
             String value = kv[1];
@@ -206,7 +206,7 @@ public class IO {
         String id = kv[1];
         EconGuild econGuild = new EconGuild(id);
 
-        for (int i = 1; i < parts.length; i += 2) {
+        for (int i = 1; i < parts.length; i++) {
             kv = parts[i].split(RECORD_SEPARATOR);
             String key = kv[0];
             String value = kv[1];

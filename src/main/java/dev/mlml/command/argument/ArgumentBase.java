@@ -2,12 +2,9 @@ package dev.mlml.command.argument;
 
 import lombok.Getter;
 
-import java.util.Objects;
-
 @Getter
 public abstract class ArgumentBase<V> {
     final String name, description;
-    @Getter
     final boolean isRequired;
 
     public ArgumentBase(String name, String description, boolean required) {
