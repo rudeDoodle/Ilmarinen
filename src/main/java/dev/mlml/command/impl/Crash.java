@@ -63,9 +63,7 @@ public class Crash extends Command {
 
         EconGuild eg = Economy.getGuild(ctx.getGuild().getId());
         GamblingInstance gi = new GamblingInstance(eu, eg);
-
-        gi.play(amount);
-
+        
         CrashGame existingCrash = games.get(channelId);
         if (existingCrash != null && existingCrash.notJoinable()) {
             ctx.fail("A game is already in progress!");
@@ -212,14 +210,6 @@ public class Crash extends Command {
 
             if (players.stream().anyMatch(p -> p.getId().equals(gi.getUser().getId()))) {
                 return "You have already joined!";
-            }
-
-            if (amount <= 0) {
-                return "Invalid amount!";
-            }
-
-            if (!gi.getUser().canAfford(amount)) {
-                return "You do not have enough money!";
             }
 
             players.add(new Player(gi, amount));
