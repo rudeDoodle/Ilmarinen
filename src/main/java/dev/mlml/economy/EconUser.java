@@ -4,9 +4,14 @@ import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 @Data
 public class EconUser {
     private static final Logger logger = LoggerFactory.getLogger(EconUser.class);
+
+    public static final String ACCOLADE_BETA_TESTER = "<:beta_tester:918551032273977355>";
+    public static final String ACCOLADE_HIGH_ROLLER = "<a:high_roller:948584238368825364>";
 
     @Serialize
     private float money = 0;
@@ -23,6 +28,14 @@ public class EconUser {
     private float winnings = 0;
     @Serialize
     private float spent = 0;
+
+    @Serialize
+    private int bankruptcies = 0;
+
+    public void bailout(float bailout) {
+        money = bailout;
+        bankruptcies++;
+    }
 
     public void play(float amount) {
         games++;
@@ -42,6 +55,10 @@ public class EconUser {
         }
         winnings += amount;
         money += amount;
+
+        if (winnings > 10000) {
+            addAccolade(ACCOLADE_HIGH_ROLLER);
+        }
     }
 
     public boolean canAfford(float amount) {
@@ -62,6 +79,29 @@ public class EconUser {
 
     public int getLost() {
         return games - wins;
+    }
+
+    @Serialize
+    private String accolades;
+
+    public String[] getAccolades() {
+        if (accolades == null) {
+            return new String[0];
+        }
+        return accolades.split(",");
+    }
+
+    public void addAccolade(String accolade) {
+        if (accolades == null) {
+            accolades = accolade;
+            return;
+        }
+
+        if (Arrays.stream(getAccolades()).anyMatch(a -> a.equalsIgnoreCase(accolade))) {
+            return;
+        }
+
+        accolades += "," + accolade;
     }
 
     @Serialize

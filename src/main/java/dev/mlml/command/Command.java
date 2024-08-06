@@ -1,11 +1,11 @@
 package dev.mlml.command;
 
+import dev.mlml.Config;
 import dev.mlml.command.argument.ArgumentBase;
 import dev.mlml.command.argument.StringArgument;
 import lombok.Getter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.internal.utils.PermissionUtil;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ public abstract class Command {
     private final String description;
     private final int cooldown;
     private final EnumSet<Permission> permissions;
+    private final EnumSet<CommandInfo.ExtendedPermission> extendedPermissions;
     private final CommandInfo.Category category;
     private final List<ArgumentBase<?>> arguments = new ArrayList<>();
 
@@ -37,6 +38,8 @@ public abstract class Command {
         cooldown = ci.cooldown();
         permissions = EnumSet.noneOf(Permission.class);
         permissions.addAll(Arrays.asList(ci.permissions()));
+        extendedPermissions = EnumSet.noneOf(CommandInfo.ExtendedPermission.class);
+        extendedPermissions.addAll(Arrays.asList(ci.extendedPermissions()));
         category = ci.category();
 
 
@@ -93,16 +96,21 @@ public abstract class Command {
     public abstract void execute(Context ctx);
 
     public boolean canExecute(Member member, GuildChannel channel) {
+        if (permissions.isEmpty()) {
+            return true;
+        }
+
+        if (!extendedPermissions.isEmpty()) {
+            if (extendedPermissions.contains(CommandInfo.ExtendedPermission.BOT_ADMIN)
+                    && Arrays.stream(Config.getBotConfig().getAdmins())
+                             .noneMatch(admin -> admin.equals(member.getId()))) {
+                return false;
+            }
+        }
+
         return PermissionUtil.checkPermission(channel.getPermissionContainer(),
                                               member,
                                               permissions.toArray(new Permission[0])
         );
     }
-
-    public boolean canExecute(Member member) {
-        return PermissionUtil.checkPermission(member,
-                                              permissions.toArray(new Permission[0])
-        );
-    }
-
 }

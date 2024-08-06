@@ -3,10 +3,12 @@ package dev.mlml.command.impl;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
+import dev.mlml.command.Replies;
 import dev.mlml.command.argument.ParsedArgument;
 import dev.mlml.command.argument.UserArgument;
 import dev.mlml.economy.EconUser;
 import dev.mlml.economy.Economy;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 
@@ -32,6 +34,16 @@ public class UserInfo extends Command {
 
         EconUser econUser = Economy.getUser(user.getId());
 
-        ctx.succeed(String.format("%s has %.2f money", user.getEffectiveName(), econUser.getMoney()));
+        EmbedBuilder eb = Replies.success(ctx, "User Info");
+        eb.addField("User", user.getAsMention() + " " + String.join(", ", econUser.getAccolades()), false);
+        eb.addField("Money", String.format("$%.2f", econUser.getMoney()), true);
+        eb.addField("Profit", String.format("$%.2f", econUser.getProfit()), true);
+        eb.addField("Loss", String.format("$%.2f", econUser.getLoss()), true);
+        eb.addField("Win Rate", String.format("%.2f%%", econUser.getWinRate()), true);
+        eb.addField("Games", String.valueOf(econUser.getGames()), true);
+        eb.addField("Wins", String.valueOf(econUser.getWins()), true);
+        eb.addField("Lost", String.valueOf(econUser.getLost()), true);
+
+        ctx.reply(eb.build());
     }
 }

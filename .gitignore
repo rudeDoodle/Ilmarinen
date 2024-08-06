@@ -43,6 +43,7 @@ bin/
 
 ### Secrets ###
 ilmarinen.xml
+ilmarinen.json
 
 ### Custom files ###
 *.ilm

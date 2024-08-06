@@ -28,6 +28,9 @@ public class Economy {
             users.put(id, new EconUser(id));
         }
 
+        // TODO: Disable this code at some point
+        users.get(id).addAccolade(EconUser.ACCOLADE_BETA_TESTER);
+
         return users.get(id);
     }
 

@@ -10,7 +10,7 @@ public class FloatArgument extends ArgumentBase<Float> {
         return Float.parseFloat(input);
     }
 
-    public static class Builder extends ArgumentBase.Builder<FloatArgument.Builder, String, FloatArgument> {
+    public static class Builder extends ArgumentBase.Builder<FloatArgument.Builder, Float, FloatArgument> {
         public Builder(String name) {
             super(name);
         }

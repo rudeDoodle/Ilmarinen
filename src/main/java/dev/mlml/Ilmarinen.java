@@ -28,6 +28,8 @@ public class Ilmarinen {
         CommandRegistry.registerClass(Slotmachine.class);
         CommandRegistry.registerClass(Crash.class);
         CommandRegistry.registerClass(Leaderboard.class);
+        CommandRegistry.registerClass(Bankruptcy.class);
+        CommandRegistry.registerClass(Adjust.class);
     }
 
     public static void main(String[] args) {
@@ -39,7 +41,7 @@ public class Ilmarinen {
         Config.loadFromFile();
         IO.load();
 
-        String token = Config.BotConfig.getToken();
+        String token = Config.getBotConfig().getToken();
 
         if (token == null) {
             logger.error("Please specify a token as environment variable");

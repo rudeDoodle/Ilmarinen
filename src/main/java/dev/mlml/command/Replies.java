@@ -3,12 +3,10 @@ package dev.mlml.command;
 import dev.mlml.Ilmarinen;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.*;
-
 public class Replies {
-    private static final Color ERROR_COLOR = Color.RED;
-    private static final Color SUCCESS_COLOR = Color.GREEN;
-    private static final Color INFO_COLOR = Color.BLUE;
+    private static final int ERROR_COLOR = 0xFF5555;
+    private static final int SUCCESS_COLOR = 0x55FF55;
+    private static final int INFO_COLOR = 0x5555FF;
 
     private static final String ERROR_TITLE = ":x: Error";
     private static final String SUCCESS_TITLE = ":white_check_mark: Success";

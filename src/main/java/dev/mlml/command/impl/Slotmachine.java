@@ -4,7 +4,7 @@ import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
 import dev.mlml.command.Replies;
-import dev.mlml.command.argument.FloatArgument;
+import dev.mlml.command.argument.MoneyArgument;
 import dev.mlml.command.argument.ParsedArgument;
 import dev.mlml.economy.*;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,7 +26,7 @@ import java.util.Random;
 public class Slotmachine extends Command {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Slotmachine.class);
 
-    private static final FloatArgument AMOUNT_ARG = new FloatArgument.Builder("amount")
+    private static final MoneyArgument AMOUNT_ARG = new MoneyArgument.Builder("amount")
             .description("The amount of money to bet")
             .get();
 
@@ -55,16 +55,11 @@ public class Slotmachine extends Command {
             return;
         }
 
-        float amount = amountArg.get().getValue();
-
-        if (amount <= 0) {
-            ctx.fail("Invalid amount");
-            return;
-        }
-
         EconUser eu = Economy.getUser(ctx.getMember().getId());
         EconGuild eg = Economy.getGuild(ctx.getGuild().getId());
         GamblingInstance gi = new GamblingInstance(eu, eg);
+
+        float amount = amountArg.get().getValue() >= Float.MAX_VALUE ? eu.getMoney() : amountArg.get().getValue();
 
         if (!eu.canAfford(amount)) {
             ctx.fail("You don't have enough money");

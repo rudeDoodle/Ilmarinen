@@ -3,7 +3,7 @@ package dev.mlml.command.impl;
 import dev.mlml.command.Command;
 import dev.mlml.command.CommandInfo;
 import dev.mlml.command.Context;
-import dev.mlml.command.argument.FloatArgument;
+import dev.mlml.command.argument.MoneyArgument;
 import dev.mlml.command.argument.ParsedArgument;
 import dev.mlml.economy.*;
 import lombok.Data;
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Crash extends Command {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Crash.class);
 
-    private static final FloatArgument AMOUNT_ARG = new FloatArgument.Builder("amount")
+    private static final MoneyArgument AMOUNT_ARG = new MoneyArgument.Builder("amount")
             .description("The amount of money to bet")
             .require()
             .get();
@@ -51,6 +51,11 @@ public class Crash extends Command {
         }
 
         EconUser eu = Economy.getUser(ctx.getMember().getId());
+
+        if (amount >= Float.MAX_VALUE) {
+            amount = eu.getMoney();
+        }
+
         if (!eu.canAfford(amount)) {
             ctx.fail("You do not have enough money!");
             return;
@@ -69,6 +74,12 @@ public class Crash extends Command {
 
         CrashGame game = games.computeIfAbsent(channelId, k -> new CrashGame((TextChannel) ctx.getChannel()));
         String failReason = game.joinPlayer(gi, amount);
+
+        if (failReason != null) {
+            ctx.fail(failReason);
+        }
+
+        IO.save();
     }
 
     public static void handleCrashLeaveButton(ButtonInteractionEvent event) {
