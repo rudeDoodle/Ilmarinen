@@ -17,6 +17,9 @@ public class OptionArgument extends ArgumentBase<String> {
 
     @Override
     public String parse(String input) {
+        if (!List.of(options).contains(input)) {
+            return null;
+        }
         return input;
     }
 
