@@ -3,7 +3,7 @@ package dev.mlml;
 import dev.mlml.command.CommandRegistry;
 import dev.mlml.command.impl.*;
 import dev.mlml.economy.IO;
-import dev.mlml.handlers.Listener;
+import dev.mlml.handlers.EventManager;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -26,6 +26,8 @@ public class Ilmarinen {
         CommandRegistry.registerClass(Coinflip.class);
         CommandRegistry.registerClass(Dog.class);
         CommandRegistry.registerClass(Slotmachine.class);
+        CommandRegistry.registerClass(Crash.class);
+        CommandRegistry.registerClass(Leaderboard.class);
     }
 
     public static void main(String[] args) {
@@ -63,7 +65,7 @@ public class Ilmarinen {
         logger.info("Starting bot...");
 
         jda = JDABuilder.createLight(token, intents)
-                        .addEventListeners(new Listener())
+                        .addEventListeners(new EventManager())
                         .build();
     }
 }

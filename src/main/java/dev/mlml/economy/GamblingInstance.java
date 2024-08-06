@@ -1,8 +1,11 @@
 package dev.mlml.economy;
 
+import lombok.Getter;
+
 /**
  * This class exists solely as a wrapper for stats to combine the separate win calls to one
  */
+@Getter
 public class GamblingInstance {
     private final EconUser user;
     private final EconGuild guild;

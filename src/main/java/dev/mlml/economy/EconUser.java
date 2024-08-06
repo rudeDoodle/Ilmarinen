@@ -56,6 +56,14 @@ public class EconUser {
         return winnings - spent;
     }
 
+    public float getLoss() {
+        return spent - winnings;
+    }
+
+    public int getLost() {
+        return games - wins;
+    }
+
     @Serialize
     private final String id;
 

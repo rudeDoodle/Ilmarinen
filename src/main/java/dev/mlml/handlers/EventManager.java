@@ -1,14 +1,16 @@
 package dev.mlml.handlers;
 
 import dev.mlml.command.CommandRegistry;
+import dev.mlml.command.impl.Crash;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Listener extends ListenerAdapter {
-    private static final Logger logger = LoggerFactory.getLogger(Listener.class);
+public class EventManager extends ListenerAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(EventManager.class);
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -21,6 +23,12 @@ public class Listener extends ListenerAdapter {
 
     @Override
     public void onMessageDelete(MessageDeleteEvent event) {
-        System.out.printf("[%s] Message deleted\n", event.getChannel());
+        logger.info("[{}] Message deleted", event.getChannel());
+    }
+
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        logger.info("[{}] Button clicked", event.getChannel());
+        Crash.handleCrashLeaveButton(event);
     }
 }
