@@ -25,6 +25,7 @@ public class Ilmarinen {
         CommandRegistry.registerClass(UserInfo.class);
         CommandRegistry.registerClass(Coinflip.class);
         CommandRegistry.registerClass(Dog.class);
+        CommandRegistry.registerClass(Slotmachine.class);
     }
 
     public static void main(String[] args) {

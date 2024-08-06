@@ -26,12 +26,13 @@ import java.util.Random;
 public class Slotmachine extends Command {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(Slotmachine.class);
 
-    private final static FloatArgument AMOUNT_ARG = new FloatArgument.Builder("amount")
+    private static final FloatArgument AMOUNT_ARG = new FloatArgument.Builder("amount")
             .description("The amount of money to bet")
-            .require()
             .get();
 
-    private final static List<Payout> payouts = List.of(
+    private static final String ROLLING_EMOJI = "<a:slots_roll:948603881087180800>";
+
+    private static final List<Payout> PAYOUTS = List.of(
             new Payout(":lemon:", 8, 0.1),
             new Payout(":strawberry:", 6, 0.2),
             new Payout(":apple:", 4, 0.3),
@@ -46,13 +47,10 @@ public class Slotmachine extends Command {
     public void execute(Context ctx) {
         Optional<ParsedArgument<Float>> amountArg = ctx.getArgument(AMOUNT_ARG);
 
-        EmbedBuilder resEmbed = Replies.base(ctx);
-        resEmbed.setColor(0x00FF00);
+        EmbedBuilder resEmbed = Replies.base(ctx).setColor(0x00FF00);
 
         if (amountArg.isEmpty()) {
-            for (Payout p : payouts) {
-                resEmbed.addField(p.emoji().repeat(3), "x" + p.payoutMult(), true);
-            }
+            displayPayouts(resEmbed);
             ctx.reply(resEmbed.build());
             return;
         }
@@ -74,31 +72,28 @@ public class Slotmachine extends Command {
         }
 
         gi.play(amount);
-
-        gi.play(amount);
         List<Payout> rolled = new ArrayList<>();
-        resEmbed.setDescription("Rolling... :slot_machine: :slot_machine: :slot_machine:");
+        resEmbed.setDescription(ROLLING_EMOJI.repeat(3));
         MessageEmbed initialEmbed = resEmbed.build();
+
         ctx.getMessage().replyEmbeds(initialEmbed).queue(resMsg -> {
-            while (rolled.size() < 3) {
+            for (int i = 0; i < 3; i++) {
                 try {
                     Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     logger.error("Interrupted while sleeping", e);
                 }
-                Payout roll = roll();
-                rolled.add(roll);
-                resEmbed.setDescription(getRolledEmojis(rolled) + ":slot_machine:".repeat(3 - rolled.size()));
+                rolled.add(roll());
+                resEmbed.setDescription(getRolledEmojis(rolled) + ROLLING_EMOJI.repeat(3 - rolled.size()));
                 resMsg.editMessageEmbeds(resEmbed.build()).queue();
             }
 
-            if (rolled.get(0).equals(rolled.get(1)) && rolled.get(0).equals(rolled.get(2))) {
-                float winnings = rolled.get(0).payoutMult() * amount;
+            float winnings = calculateWinnings(amount, rolled);
+            if (winnings > 0) {
                 gi.win(winnings);
-                resEmbed.setDescription(resEmbed.getDescriptionBuilder() + "\nYou won " + winnings + "! (Payout: " + rolled.get(
-                        0).payoutMult() + "x" + amount + ")");
+                resEmbed.appendDescription("\nYou won " + winnings + "! (Payout: " + winnings / amount + "x" + amount + ")");
             } else {
-                resEmbed.setDescription(resEmbed.getDescriptionBuilder() + "\nYou lost " + amount + "!");
+                resEmbed.appendDescription("\nYou lost " + amount + "!");
             }
 
             resMsg.editMessageEmbeds(resEmbed.build()).queue();
@@ -106,24 +101,36 @@ public class Slotmachine extends Command {
         });
     }
 
+    private void displayPayouts(EmbedBuilder resEmbed) {
+        for (Payout payout : PAYOUTS) {
+            resEmbed.addField(payout.emoji().repeat(3), "x" + payout.payoutMult(), true);
+        }
+    }
+
     private Payout roll() {
-        Random rand = new Random();
-        double randomValue = rand.nextDouble();
-        for (Payout payout : payouts) {
+        double randomValue = new Random().nextDouble();
+        for (Payout payout : PAYOUTS) {
             if (randomValue < payout.probability()) {
                 return payout;
             }
             randomValue -= payout.probability();
         }
-        return null;
+        return PAYOUTS.get(PAYOUTS.size() - 1); // fallback to the last item
     }
 
     private String getRolledEmojis(List<Payout> rolled) {
         StringBuilder sb = new StringBuilder();
-        for (Payout p : rolled) {
-            sb.append(p.emoji());
+        for (Payout payout : rolled) {
+            sb.append(payout.emoji());
         }
         return sb.toString();
+    }
+
+    private float calculateWinnings(float amount, List<Payout> rolled) {
+        if (rolled.get(0).equals(rolled.get(1)) && rolled.get(0).equals(rolled.get(2))) {
+            return rolled.get(0).payoutMult() * amount;
+        }
+        return 0;
     }
 
     private record Payout(String emoji, int payoutMult, double probability) {
