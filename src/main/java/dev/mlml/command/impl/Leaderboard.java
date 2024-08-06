@@ -17,7 +17,8 @@ import java.util.List;
 @CommandInfo(
         keywords = {"leaderboard", "top", "lb"},
         name = "Leaderboard",
-        description = "Shows the leaderboard"
+        description = "Shows the leaderboard",
+        category = CommandInfo.Category.Economy
 )
 public class Leaderboard extends Command {
     private final static OptionArgument SORT_BY = new OptionArgument.Builder("sort")
