@@ -42,7 +42,6 @@ bin/
 .DS_Store
 
 ### Secrets ###
-ilmarinen.xml
 ilmarinen.json
 
 ### Custom files ###
